@@ -13,4 +13,13 @@
         <url-pattern></url-pattern>
         <!-- порожній патерн - домашня сторінка -->
     </servlet-mapping>
+    <servlet>
+        <servlet-name>JspServlet</servlet-name>
+        <servlet-class>step.learning.JspServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JspServlet</servlet-name>
+        <url-pattern>/about</url-pattern>
+    </servlet-mapping>
 </web-app>
+
