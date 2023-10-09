@@ -1,6 +1,16 @@
 # JavaWeb201 Homeworks
 
+## 09.10 Homework
+
+* Code <br>
+    * IoCServlet: <br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw2/code.png)
+* Result <br>
+    * IoC page:
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw2/result.png)
+
 ## 06.10 Homework
+
 * Code <br>
     * Servlet class:<br>
       ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw1/servlet_class.png)

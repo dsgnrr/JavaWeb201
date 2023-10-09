@@ -40,4 +40,7 @@
     <li class="collection-item">
         7. Перевіряємо: hash(123) = <%=request.getAttribute("hash")%>
     </li>
+    <li class="collection-item">
+        8. Перевіряємо: randomHex(6) = <%=request.getAttribute("random")%>
+    </li>
 </ul>
