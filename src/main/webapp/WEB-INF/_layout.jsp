@@ -17,15 +17,21 @@
     <div class="nav-wrapper purple darken-4">
         <a href="<%= context %>/" class="brand-logo">Java Web201</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="<%=context%>/about">About</a></li>
-            <li><a href="badges.html">Components</a></li>
-            <li><a href="collapsible.html">JavaScript</a></li>
+            <li <%="about.jsp".equals(pageBody) ? "class='active'" : ""%>
+            ><a href="<%=context%>/about">About</a></li>
+            <li <%="filters.jsp".equals(pageBody) ? "class='active'" : ""%>
+            ><a href="<%=context%>/filters">Filters</a></li>
+            <li <%="ioc.jsp".equals(pageBody) ? "class='active'" : ""%>
+            ><a href="<%=context%>/ioc">IoC</a></li>
         </ul>
     </div>
 </nav>
 
-<%=String.format("%s/%s", context, pageBody)%>
-<jsp:include page="<%= pageBody %>"/>
+<%--<%=String.format("%s/%s", context, pageBody)%>--%>
+<div class="container">
+    <jsp:include page="<%= pageBody %>"/>
+</div>
+
 
 <footer class="page-footer purple darken-4">
     <div class="container">
