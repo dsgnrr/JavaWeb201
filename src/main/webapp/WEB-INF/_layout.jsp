@@ -11,12 +11,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <%--    Site CSS--%>
+    <link rel="stylesheet" href="<%=context%>/css/site.css"/>
 </head>
 <body>
 <nav>
     <div class="nav-wrapper purple darken-4">
-        <a href="<%= context %>/" class="brand-logo">Java Web201</a>
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <!-- Modal Trigger -->
+        <a class="left modal-trigger auth-icon" href="#auth-modal"><i class="material-icons">exit_to_app</i></a>
+
+        <a href="<%= context %>/" class="left site-logo">Java Web201</a>
+
+        <ul id="nav-me" class="right hide-on-med-and-down">
             <li <%="about.jsp".equals(pageBody) ? "class='active'" : ""%>
             ><a href="<%=context%>/about">About</a></li>
             <li <%="filters.jsp".equals(pageBody) ? "class='active'" : ""%>
@@ -60,7 +66,23 @@
     </div>
 </footer>
 
+
+<!-- Modal Structure -->
+<div id="auth-modal" class="modal">
+    <div class="modal-content">
+        <h4>Автентифікація на сайті</h4>
+        <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+        <a href="<%=context%>/signup" class="modal-close waves-effect deep-purple darken-4 btn-flat">Реєстрація</a>
+        <a href="#!" class="modal-close waves-effect deep-purple darken-2 btn-flat">Вхід</a>
+    </div>
+</div>
+
+
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<%--Site JS--%>
+<script src="<%=context%>/js/site.js"></script>
 </body>
 </html>
