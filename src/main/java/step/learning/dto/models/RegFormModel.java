@@ -63,7 +63,7 @@ public class RegFormModel {
         }
         if (getBirthdateAsString().isEmpty()) {
             isValid = false;
-            result.setEmailMessage("Дата народження не може бути порожньою");
+            result.setDateMessage("Дата народження не може бути порожньою");
         }
         if (isValid) {
             return null;
