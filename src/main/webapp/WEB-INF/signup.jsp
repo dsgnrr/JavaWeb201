@@ -1,6 +1,7 @@
 <%@ page import="step.learning.dto.models.RegFormModel" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
+<%@ page import="step.learning.dto.models.RegistrationValidationModel" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     // Перевіряємо чи є повідомлення попередньої форми, формуємо значення для полів
@@ -9,13 +10,11 @@
     String nameValue = model == null ? "" : model.getName();
     String emailValue = model == null ? "" : model.getEmail();
     String birthdateValue = model == null ? "" : model.getBirthdateAsString();
-    Map<String, String> errors = model == null ? new HashMap<String, String>() : (HashMap<String, String>) model.getErrorMessages();
+    RegistrationValidationModel validationModel = model == null ? new RegistrationValidationModel() : model.getErrorMessages();
+//    Map<String, String> errors = model == null ? new HashMap<String, String>() : (HashMap<String, String>) model.getErrorMessages();
 %>
 <h2>Реєстрація користувача</h2>
-<% if (errors.containsKey("name")) { %>
-<p style="color: darkred">error
-</p>
-<% } %>
+
 <p><%=request.getAttribute("reg-message")%>
 </p>
 <div class="row">
@@ -23,16 +22,21 @@
         <div class="row">
             <div class="input-field col s6">
                 <i class="material-icons prefix">badge</i>
-                <input value="<%= loginValue %>" name="reg-login" id="reg-login" type="text" class="validate">
+                <input value="<%= loginValue %>" name="reg-login" id="reg-login" type="text"
+                       class="validate <% if (!validationModel.getLoignMessage().isEmpty()) { %>invalid<% } %>">
                 <label for="reg-login">Логін на сайті</label>
+                <% if (!validationModel.getLoignMessage().isEmpty()) { %>
+                <span class="helper-text" data-error="<%=validationModel.getLoignMessage()%>">Helper text</span>
+                <% } %>
             </div>
             <div class="input-field col s6">
                 <i class="material-icons prefix">person</i>
                 <input value="<%= nameValue %>" name="reg-name" id="reg-name" type="text"
-                       class="validate  <% if (errors.containsKey("name")) { %>invalid<% } %>">
+                       class="validate
+                <% if (!validationModel.getNameMessage().isEmpty()) { %>invalid<% } %>">
                 <label for="reg-name">Реальне ім'я</label>
-                <% if (errors.containsKey("name")) { %>
-                <span class="helper-text" data-error="<%= errors.get("name") %>">Helper text</span>
+                <% if (!validationModel.getNameMessage().isEmpty()) { %>
+                <span class="helper-text" data-error="<%=validationModel.getNameMessage()%>">Helper text</span>
                 <% } %>
             </div>
         </div>
@@ -51,14 +55,21 @@
         <div class="row">
             <div class="input-field col s6">
                 <i class="material-icons prefix">alternate_email</i>
-                <input value="<%= emailValue %>" name="reg-email" id="reg-email" type="email" class="validate">
+                <input value="<%= emailValue %>" name="reg-email" id="reg-email" type="email"
+                       class="validate <% if (!validationModel.getEmailMessage().isEmpty()) { %>invalid<% } %>">
                 <label for="reg-email">E-mail</label>
+                <% if (!validationModel.getEmailMessage().isEmpty()) { %>
+                <span class="helper-text" data-error="<%=validationModel.getEmailMessage()%>">Helper text</span>
+                <% } %>
             </div>
             <div class="input-field col s6">
                 <i class="material-icons prefix">cake</i>
                 <input value="<%= birthdateValue %>" name="reg-birthdate" id="reg-birthdate" type="date"
-                       class="validate">
+                       class="validate <% if (!validationModel.getDateMessage().isEmpty()) { %>invalid<% } %>">
                 <label for="reg-birthdate">Дата народження</label>
+                <% if (!validationModel.getDateMessage().isEmpty()) { %>
+                <span class="helper-text" data-error="<%=validationModel.getDateMessage()%>">Helper text</span>
+                <% } %>
             </div>
         </div>
         <div class="row">

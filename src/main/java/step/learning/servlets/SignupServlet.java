@@ -44,21 +44,18 @@ public class SignupServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RegFormModel model;
-        try {
-            model = new RegFormModel(req);
-        } catch (ParseException ex) {
-            model = null;
-        }
+        RegFormModel model = new RegFormModel(req);
+
         // Валідація моделі (даних)
 
         // Зберігаємо необдхідні дані у сесії та повертаємо на ГЕТ
         // шляхом відповіді-редиректу
         HttpSession session = req.getSession();
-        if (model == null) {
-            // стан помилки розбору форми
-            session.setAttribute("reg-status", 0);
-        } else if (!model.getErrorMessages().isEmpty()) {
+//        if (model == null) {
+//            // стан помилки розбору форми
+//            session.setAttribute("reg-status", 0);
+//        }
+        if (model.getErrorMessages() != null) {
             // стан помилки валідації - зберігаємо саму модель
             // для відновлення даніих на формі введення
             session.setAttribute("reg-model", model);

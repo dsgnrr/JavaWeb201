@@ -19,32 +19,62 @@ public class RegFormModel {
     private boolean isAgree;
 
     // endregion
-    public RegFormModel(HttpServletRequest request) throws ParseException {
+    public RegFormModel(HttpServletRequest request) {
         this.setName(request.getParameter("reg-name"));
         this.setLogin(request.getParameter("reg-login"));
         this.setPassword(request.getParameter("reg-password"));
         this.setRepeat(request.getParameter("reg-repeat"));
         this.setEmail(request.getParameter("reg-email"));
-        this.setBirthdate(request.getParameter("reg-birthdate"));
         this.setIsAgree(request.getParameter("reg-rules"));
+        try {
+            this.setBirthdate(request.getParameter("reg-birthdate"));
+        } catch (ParseException e) {
+            this.setBirthdate((Date) null);
+        }
     }
 
-    public Map<String, String> getErrorMessages() {
-        Map<String, String> result = new HashMap<>();
+    //    public Map<String, String> getErrorMessages() {
+//        Map<String, String> result = new HashMap<>();
+//        if (name == null || "".equals(name)) {
+//            result.put("name", "Ім'я не може бути порожнім");
+//        }
+//        if (login == null || "".equals(login)) {
+//            result.put("login", "Логін не може бути порожнім");
+//        }
+//        if (email == null || "".equals(email)) {
+//            result.put("email", "Email не може бути порожнім");
+//        }
+//        return result;
+//    }
+    public RegistrationValidationModel getErrorMessages() {
+        RegistrationValidationModel result = new RegistrationValidationModel();
+        boolean isValid = true;
         if (name == null || "".equals(name)) {
-            result.put("name", "Ім'я не може бути порожнім");
+            isValid = false;
+            result.setNameMessage("Ім'я не може бути порожнім");
         }
         if (login == null || "".equals(login)) {
-            result.put("login", "Логін не може бути порожнім");
+            isValid = false;
+            result.setLoignMessage("Логін не може бути порожнім");
         }
         if (email == null || "".equals(email)) {
-            result.put("email", "Email не може бути порожнім");
+            isValid = false;
+            result.setEmailMessage("Email не може бути порожнім");
         }
-        return result;
+        if (getBirthdateAsString().isEmpty()) {
+            isValid = false;
+            result.setEmailMessage("Дата народження не може бути порожньою");
+        }
+        if (isValid) {
+            return null;
+        } else return result;
     }
 
     // region accessors
     public String getBirthdateAsString() {
+        if (getBirthdate() == null) {
+            return "";
+        }
         return formDateFormat.format(getBirthdate());
     }
 

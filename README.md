@@ -3,7 +3,14 @@
 ## 10.10 Homework
 
 * Code <br>
-  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/code.png)
+    * RegistrationValidationForm<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/code1.png)
+    * Get error messages<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/code2.png)
+    * doPost<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/code3.png)
+* Result <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/result.png)
 
 ## 09.10 Homework
 
