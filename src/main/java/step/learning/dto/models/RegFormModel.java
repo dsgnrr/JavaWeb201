@@ -1,11 +1,14 @@
 package step.learning.dto.models;
 
+import org.apache.commons.fileupload.FileItem;
+import step.learning.services.formparse.FormParseResult;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class RegFormModel {
 
@@ -17,20 +20,37 @@ public class RegFormModel {
     private String email;
     private Date birthdate;
     private boolean isAgree;
+    private String avatar; // filename for avatar
 
     // endregion
-    public RegFormModel(HttpServletRequest request) {
-        this.setName(request.getParameter("reg-name"));
-        this.setLogin(request.getParameter("reg-login"));
-        this.setPassword(request.getParameter("reg-password"));
-        this.setRepeat(request.getParameter("reg-repeat"));
-        this.setEmail(request.getParameter("reg-email"));
-        this.setIsAgree(request.getParameter("reg-rules"));
-        try {
-            this.setBirthdate(request.getParameter("reg-birthdate"));
-        } catch (ParseException e) {
-            this.setBirthdate((Date) null);
+    public RegFormModel(FormParseResult result) throws ParseException {
+        Map<String, String> fields = result.getFields();
+        this.setName(fields.get("reg-name"));
+        this.setLogin(fields.get("reg-login"));
+        this.setPassword(fields.get("reg-password"));
+        this.setRepeat(fields.get("reg-repeat"));
+        this.setEmail(fields.get("reg-email"));
+        this.setIsAgree(fields.get("reg-rules"));
+        this.setBirthdate(fields.get("reg-birthdate"));
+        Map<String, FileItem> files = result.getFiles();
+        if (files.containsKey("reg-avatar")) {
+            // є переданий файл, обробляємо його
+            this.setAvatar(files.get("reg-avatar"));
         }
+    }
+
+//    public RegFormModel(HttpServletRequest request) throws ParseException {
+//        this.setName(request.getParameter("reg-name"));
+//        this.setLogin(request.getParameter("reg-login"));
+//        this.setPassword(request.getParameter("reg-password"));
+//        this.setRepeat(request.getParameter("reg-repeat"));
+//        this.setEmail(request.getParameter("reg-email"));
+//        this.setIsAgree(request.getParameter("reg-rules"));
+//        this.setBirthdate(request.getParameter("reg-birthdate"));
+//    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     //    public Map<String, String> getErrorMessages() {
@@ -48,29 +68,55 @@ public class RegFormModel {
 //    }
     public RegistrationValidationModel getErrorMessages() {
         RegistrationValidationModel result = new RegistrationValidationModel();
-        boolean isValid = true;
+        //boolean isValid = true;
         if (name == null || "".equals(name)) {
-            isValid = false;
+            result.setValid(false);
             result.setNameMessage("Ім'я не може бути порожнім");
         }
         if (login == null || "".equals(login)) {
-            isValid = false;
+            result.setValid(false);
             result.setLoignMessage("Логін не може бути порожнім");
+        } else if (!Pattern.matches("^\\[a-zA-Z0-9]+$", login)) {
+            result.setValid(false);
+            result.setLoignMessage("Логін не відповідає шаблону: тільки літери та цифри без пробілів");
         }
         if (email == null || "".equals(email)) {
-            isValid = false;
+            result.setValid(false);
             result.setEmailMessage("Email не може бути порожнім");
         }
         if (getBirthdateAsString().isEmpty()) {
-            isValid = false;
+            result.setValid(false);
             result.setDateMessage("Дата народження не може бути порожньою");
         }
-        if (isValid) {
+        if (result.isValid()) {
             return null;
         } else return result;
     }
 
     // region accessors
+    private void setAvatar(FileItem item) throws ParseException {
+        List<String> allowExtensions = Arrays.asList(".png", ".jpg", ".jpeg", ".pict", ".pic");
+        String submitedFilename = item.getName();
+        // Визначити тип файлу (розширення) та перевірити не перелік дозволенних
+        String ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
+        if (!allowExtensions.contains(ext)) {
+            throw new ParseException("Using not allow file extension", 0);
+        }
+        String savedFilename;
+        File savedFile;
+        do {
+            savedFilename = UUID.randomUUID().toString().substring(0, 8) + ext;
+            savedFile = new File("D:\\IdeaProjects\\avatars\\" + savedFilename);
+        } while (savedFile.exists());
+        // завантажуємо файл
+        try {
+            item.write(savedFile);
+        } catch (Exception e) {
+            throw new ParseException("File upload error", 0);
+        }
+        this.avatar = savedFilename;
+    }
+
     public String getBirthdateAsString() {
         if (getBirthdate() == null) {
             return "";
@@ -79,7 +125,11 @@ public class RegFormModel {
     }
 
     public void setBirthdate(String birthdate) throws ParseException {
-        this.birthdate = formDateFormat.parse(birthdate);
+        if (birthdate == null || "".equals(birthdate)) {
+            this.birthdate = null;
+        } else {
+            this.birthdate = formDateFormat.parse(birthdate);
+        }
     }
 
     public void setIsAgree(String isAgree) {

@@ -1,9 +1,19 @@
 package step.learning.dto.models;
 
 public class RegistrationValidationModel {
+    private boolean isValid;
     private String nameMessage;
     private String loignMessage;
     private String dateMessage;
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid;
+    }
+
     private String emailMessage;
 
     public RegistrationValidationModel() {
@@ -11,6 +21,7 @@ public class RegistrationValidationModel {
         this.loignMessage = "";
         this.dateMessage = "";
         this.emailMessage = "";
+        this.isValid = true;
     }
 
     public String getNameMessage() {

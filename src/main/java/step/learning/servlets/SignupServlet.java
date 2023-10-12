@@ -2,7 +2,10 @@ package step.learning.servlets;
 
 import com.google.inject.Singleton;
 import step.learning.dto.models.RegFormModel;
+import step.learning.services.formparse.FormParseResult;
+import step.learning.services.formparse.FormParseService;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +16,13 @@ import java.text.ParseException;
 
 @Singleton
 public class SignupServlet extends HttpServlet {
+    private final FormParseService formParseService;
+
+    @Inject
+    public SignupServlet(FormParseService formParseService) {
+        this.formParseService = formParseService;
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // перевіряємо чи є повідомлення у сесії
@@ -44,18 +54,23 @@ public class SignupServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        RegFormModel model = new RegFormModel(req);
+        FormParseResult formParseResult = formParseService.parse(req);
+        RegFormModel model = null;
+        try {
+            model = new RegFormModel(formParseResult);
+        } catch (ParseException e) {
+            model = null;
+        }
 
-        // Валідація моделі (даних)
+        // Перевірка наявності файлу (та його збереження)
 
         // Зберігаємо необдхідні дані у сесії та повертаємо на ГЕТ
         // шляхом відповіді-редиректу
         HttpSession session = req.getSession();
-//        if (model == null) {
-//            // стан помилки розбору форми
-//            session.setAttribute("reg-status", 0);
-//        }
-        if (model.getErrorMessages() != null) {
+        if (model == null) {
+            // стан помилки розбору форми
+            session.setAttribute("reg-status", 0);
+        } else if (model.getErrorMessages() != null) {
             // стан помилки валідації - зберігаємо саму модель
             // для відновлення даніих на формі введення
             session.setAttribute("reg-model", model);

@@ -11,6 +11,11 @@
     String emailValue = model == null ? "" : model.getEmail();
     String birthdateValue = model == null ? "" : model.getBirthdateAsString();
     RegistrationValidationModel validationModel = model == null ? new RegistrationValidationModel() : model.getErrorMessages();
+    String regMessage = (String) request.getAttribute("reg-message");
+    String loginValid = validationModel.getLoignMessage().isEmpty() ? "valid" : "invalid";
+    if (regMessage == null) {
+        regMessage = "";
+    }
 //    Map<String, String> errors = model == null ? new HashMap<String, String>() : (HashMap<String, String>) model.getErrorMessages();
 %>
 <h2>Реєстрація користувача</h2>
@@ -18,7 +23,7 @@
 <p><%=request.getAttribute("reg-message")%>
 </p>
 <div class="row">
-    <form class="col s12" method="post" action="">
+    <form class="col s12" method="post" enctype="multipart/form-data" action="">
         <div class="row">
             <div class="input-field col s6">
                 <i class="material-icons prefix">badge</i>
@@ -32,8 +37,7 @@
             <div class="input-field col s6">
                 <i class="material-icons prefix">person</i>
                 <input value="<%= nameValue %>" name="reg-name" id="reg-name" type="text"
-                       class="validate
-                <% if (!validationModel.getNameMessage().isEmpty()) { %>invalid<% } %>">
+                       class="validate <%=loginValid%>">
                 <label for="reg-name">Реальне ім'я</label>
                 <% if (!validationModel.getNameMessage().isEmpty()) { %>
                 <span class="helper-text" data-error="<%=validationModel.getNameMessage()%>">Helper text</span>
@@ -80,7 +84,17 @@
                     <span>Не буду нічого порушувати</span>
                 </label>
             </div>
-            <div class="input-field col s6 right-align">
+            <div class="file-field input-field">
+                <div class="btn deep-purple darken-4">
+                    <i class="material-icons">account_box</i>
+                    <input type="file" name="reg-avatar">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text"
+                           placeholder="Зображення аватарка">
+                </div>
+            </div>
+            <div class="input-field row right-align">
                 <button class="waves-effect waves-light btn deep-purple darken-4"><i
                         class="material-icons right">how_to_reg</i>Реєстрація
                 </button>
@@ -88,3 +102,28 @@
         </div>
     </form>
 </div>
+
+<ul class="collection with-header">
+    <li class="collection-header"><h4>Передача файлів через форми.</h4></li>
+    <li class="collection-item">
+        1. Передача файлів можлива лише методом POST та з кодвуанням
+        пакету <code>multipart/form-data</code> (за замовчуванням, форма передається
+        з іншим кодуванням <code>application/x-www-form-urlencoded</code>).
+        Також переконуємось у наявності атрибута name у файловому інпуті.
+    </li>
+    <li class="collection-item">
+        2. Приймання пакетів з боку сервера вимагає окремої обробки.
+        Для цього вживаються додаткові модулі залежності. Наприклад,
+        <a href="https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload">Apache Commons FileUpload</a>
+    </li>
+    <li class="collection-item">
+        3. В ASP для роботи з файлами є інтерфейс IFromFile, його аналог в обраному
+        пакеті - FileItem. У формі, окрім файлів, також передаються інші поля( у
+        текстовому вигляді). Відповідно, результат розбору (парсингу) форми є
+        дві колекції - файлів та полів. Для повернення єдиного результату ( з двох
+        колекцій) слід зробити спільний інтерфейс.
+    </li>
+    <li class="collection-item"></li>
+    <li class="collection-item"></li>
+</ul>
+
