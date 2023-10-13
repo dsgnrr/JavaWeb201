@@ -44,19 +44,20 @@ public class MixedFormParseService implements FormParseService {
         // готуємо коллекції для результатів
         final Map<String, String> fields = new HashMap<>();
         final Map<String, FileItem> files = new HashMap<>();
+        final HttpServletRequest req = request;
         // визначаємо тип запиту (multipart/urlencoded)
         boolean isMultipart = request
                 .getHeader("Content-Type")
-                .startsWith("multipart/from-data");
+                .startsWith("multipart/form-data");
         // кодування закладене у CharsetFillter
-        String charsetName = (String) request.getAttribute("charsetName");
+        String charsetName = (String) req.getAttribute("charsetName");
         if (charsetName == null) { // для перенесення в інші проєкти
             charsetName = StandardCharsets.UTF_8.name();
         }
         if (isMultipart) {
             // засоби commons.upload
             try {
-                for (FileItem item : fileUpload.parseRequest(request)) {
+                for (FileItem item : fileUpload.parseRequest(req)) {
                     // всі частини (parts) запиту подаються узагальненими FileItem
                     if (item.isFormField()) { // це текстове поле форми
                         fields.put(
@@ -74,10 +75,10 @@ public class MixedFormParseService implements FormParseService {
             }
         } else { // urlencoded
             // servlet-api засоби вилучення пераметрів
-            Enumeration<String> paramNames = request.getParameterNames();
+            Enumeration<String> paramNames = req.getParameterNames();
             while (paramNames.hasMoreElements()) {
                 String name = paramNames.nextElement();
-                fields.put(name, request.getParameter(name));
+                fields.put(name, req.getParameter(name));
             }
         }
         return new FormParseResult() {
@@ -90,6 +91,12 @@ public class MixedFormParseService implements FormParseService {
             public Map<String, FileItem> getFiles() {
                 return files;
             }
+
+            @Override
+            public HttpServletRequest getRequest() {
+                return req;
+            }
+
         };
     }
 }

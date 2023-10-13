@@ -32,11 +32,12 @@ public class RegFormModel {
         this.setEmail(fields.get("reg-email"));
         this.setIsAgree(fields.get("reg-rules"));
         this.setBirthdate(fields.get("reg-birthdate"));
-        Map<String, FileItem> files = result.getFiles();
-        if (files.containsKey("reg-avatar")) {
-            // є переданий файл, обробляємо його
-            this.setAvatar(files.get("reg-avatar"));
-        }
+//
+//        if (files.containsKey("reg-avatar")) {
+//            // є переданий файл, обробляємо його
+//            this.setAvatar(files.get("reg-avatar"));
+//        }
+        this.setAvatar(result);
     }
 
 //    public RegFormModel(HttpServletRequest request) throws ParseException {
@@ -53,19 +54,6 @@ public class RegFormModel {
         return avatar;
     }
 
-    //    public Map<String, String> getErrorMessages() {
-//        Map<String, String> result = new HashMap<>();
-//        if (name == null || "".equals(name)) {
-//            result.put("name", "Ім'я не може бути порожнім");
-//        }
-//        if (login == null || "".equals(login)) {
-//            result.put("login", "Логін не може бути порожнім");
-//        }
-//        if (email == null || "".equals(email)) {
-//            result.put("email", "Email не може бути порожнім");
-//        }
-//        return result;
-//    }
     public RegistrationValidationModel getErrorMessages() {
         RegistrationValidationModel result = new RegistrationValidationModel();
         //boolean isValid = true;
@@ -76,7 +64,7 @@ public class RegFormModel {
         if (login == null || "".equals(login)) {
             result.setValid(false);
             result.setLoignMessage("Логін не може бути порожнім");
-        } else if (!Pattern.matches("^\\[a-zA-Z0-9]+$", login)) {
+        } else if (!Pattern.matches("^[a-zA-Z0-9]+$", login)) {
             result.setValid(false);
             result.setLoignMessage("Логін не відповідає шаблону: тільки літери та цифри без пробілів");
         }
@@ -94,19 +82,35 @@ public class RegFormModel {
     }
 
     // region accessors
-    private void setAvatar(FileItem item) throws ParseException {
-        List<String> allowExtensions = Arrays.asList(".png", ".jpg", ".jpeg", ".pict", ".pic");
+    private void setAvatar(FormParseResult result) throws ParseException {
+        Map<String, FileItem> files = result.getFiles();
+        if (!files.containsKey("reg-avatar")) {
+            this.avatar = null;
+            return;
+        }
+
+        // є переданий файл, обробляємо його
+        FileItem item = files.get("reg-avatar");
+        // директорія завантаження (./ - це директорія сервера (Tomcat))
+        String targetDir =
+                result.getRequest()
+                        .getServletContext() // контекст - "оточення" сервлету, з якого дізнаємось файлові шляхи
+                        .getRealPath("./upload/avatar/");
+
         String submitedFilename = item.getName();
         // Визначити тип файлу (розширення) та перевірити не перелік дозволенних
-        String ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
-        if (!allowExtensions.contains(ext)) {
-            throw new ParseException("Using not allow file extension", 0);
+        String ext;
+        try {
+            ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
+        } catch (Exception e) {
+            return;
         }
+        //String ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
         String savedFilename;
         File savedFile;
         do {
             savedFilename = UUID.randomUUID().toString().substring(0, 8) + ext;
-            savedFile = new File("D:\\IdeaProjects\\avatars\\" + savedFilename);
+            savedFile = new File(targetDir, savedFilename);
         } while (savedFile.exists());
         // завантажуємо файл
         try {
