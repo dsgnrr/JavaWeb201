@@ -1,5 +1,17 @@
 # JavaWeb201 Homeworks
 
+## 11.10 Homework
+
+* Code <br>
+    * Get extension<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw4/code1.png)
+    * Check allow extensions<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw4/code2.png)
+    * Target dir for avatar<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw4/code3.png)
+* Result <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw4/result.png)
+
 ## 10.10 Homework
 
 * Code <br>

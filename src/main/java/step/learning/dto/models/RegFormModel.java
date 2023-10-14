@@ -81,8 +81,18 @@ public class RegFormModel {
         } else return result;
     }
 
+    private String getExtension(String path) {
+        for (int index = path.length() - 1; index > 0; index--) {
+            if (path.charAt(index) == '.') {
+                return path.substring(index);
+            }
+        }
+        return "";
+    }
+
     // region accessors
     private void setAvatar(FormParseResult result) throws ParseException {
+        List<String> allowExt = Arrays.asList(".jpg", ".jpeg", ".png", ".pic", ".pict");
         Map<String, FileItem> files = result.getFiles();
         if (!files.containsKey("reg-avatar")) {
             this.avatar = null;
@@ -99,11 +109,9 @@ public class RegFormModel {
 
         String submitedFilename = item.getName();
         // Визначити тип файлу (розширення) та перевірити не перелік дозволенних
-        String ext;
-        try {
-            ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
-        } catch (Exception e) {
-            return;
+        String ext = getExtension(submitedFilename);
+        if (!allowExt.contains(ext)) {
+            throw new ParseException("File have not allow extension", 0);
         }
         //String ext = submitedFilename.substring(submitedFilename.lastIndexOf('.'));
         String savedFilename;
