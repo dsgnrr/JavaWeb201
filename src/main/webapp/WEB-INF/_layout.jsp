@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String pageBody = (String) request.getAttribute("page-body");
@@ -12,7 +13,8 @@
     <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <%--    Site CSS--%>
-    <link rel="stylesheet" href="<%=context%>/css/site.css"/>
+    <link rel="stylesheet" href="<%=context%>/css/site.css?time=<%= new Date().getTime()%>"/>
+    <%--    <script src="<%=context%>/js/site.js"></script>--%>
 </head>
 <body>
 <nav>
@@ -29,6 +31,8 @@
             ><a href="<%=context%>/filters">Filters</a></li>
             <li <%="ioc.jsp".equals(pageBody) ? "class='active'" : ""%>
             ><a href="<%=context%>/ioc">IoC</a></li>
+            <li <%="db.jsp".equals(pageBody) ? "class='active'" : ""%>
+            ><a href="<%=context%>/db">DB</a></li>
         </ul>
     </div>
 </nav>
@@ -60,7 +64,7 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-            © 2014 Copyright Text
+            © <span id="currentYear">ff</span> Copyright Text
             <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
         </div>
     </div>
@@ -82,7 +86,12 @@
 
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<%--Site JS--%>
-<script src="<%=context%>/js/site.js"></script>
+<!--Site JS-->
+<script src="<%= context %>/js/site.js?time=<%= new Date().getTime()%>"></script>
+
+<%--Спосіб антикешування, так робити не слід, якщо якісь ресурси не оновились, скоріш за все, це через кешовані дані--%>
+<%--ctrl+f5 для повного оновлення сторінки--%>
+<%--<!--Site JS-->--%>
+<%--<script src="<%= context %>/js/site.js?time=<%= new Date().getTime()%>"></script>--%>
 </body>
 </html>
