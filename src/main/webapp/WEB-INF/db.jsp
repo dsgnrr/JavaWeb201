@@ -40,15 +40,23 @@
             class="waves-effect waves-light btn deep-purple darken-4">
         Create Phone Table
     </button>
-    <input name="user-name" type="text" placeholder="Ім'я">
-    <input name="user-phone" type="text" placeholder="Телефон">
-    <button id="db-insert-button"
-            class="waves-effect waves-light btn deep-purple darken-4">
-        <i class="material-icons right">phone_iphone</i>
-        Замовити дзвінок
-    </button>
+<div class="input-field col s6">
+    <input value id="user-name" name="user-name" type="text" class="validate">
+    <label for="user-name">Ім'я</label>
+    <span id="nameError" class="helper-text" data-error=""></span>
+</div>
+<div class="input-field col s6">
+    <input name="user-phone" id="user-phone" type="text" class="validate">
+    <label for="user-phone">Телефон</label>
+    <span id="phoneError" class="helper-text" data-error=""></span>
+</div>
+<button id="db-insert-button"
+        class="waves-effect waves-light btn deep-purple darken-4">
+    <i class="material-icons right">phone_iphone</i>
+    Замовити дзвінок
+</button>
 
-    <br/>
-    <u id="out"></u>
+<br/>
+<u id="out"></u>
 </p>
 

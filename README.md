@@ -1,5 +1,15 @@
 # JavaWeb201 Homeworks
 
+## 16.10 Homework
+
+* Code <br>
+    * validate function<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw6/code1.png)
+    * request function<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw6/code2.png)
+* Result <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw6/result.png)
+
 ## 13.10 Homework
 
 * Planet scale<br>

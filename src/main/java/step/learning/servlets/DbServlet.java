@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.regex.Pattern;
 
 @Singleton
 public class DbServlet extends HttpServlet {
@@ -69,6 +70,29 @@ public class DbServlet extends HttpServlet {
         resp.getWriter().print(result.toString());
     }
 
+//    private CallMeValidationModel validateCallMeForm(JsonObject data) {
+//        CallMeValidationModel result = new CallMeValidationModel();
+//        String name = data.get("name").getAsString();
+//        String phone = data.get("phone").getAsString();
+//        if (name == null || "".equals(name)) {
+//            result.setValid(false);
+//            result.setNameMessage("Ім'я не може бути порожнім");
+//        } else if (!Pattern.matches("^[а-яА-Яa-zA-ZіІїЇ]+$", name)) {
+//            result.setValid(false);
+//            result.setNameMessage("Ім'я не відповідає шаблону, тільки букви, без пробілів");
+//            result.setNameField(name);
+//        }
+//        if (phone == null || "".equals(phone)) {
+//            result.setValid(false);
+//            result.setNameMessage("Телефон не може бути порожнім");
+//        } else if (!Pattern.matches("^\\+38\\s?(\\(\\d{3}\\)|\\d{3})\\s?\\d{3}(-|\\s)?\\d{2}(-|\\s)?\\d{2}$", phone)) {
+//            result.setValid(false);
+//            result.setNameMessage("Телефон не відповідає шаблону: +38099xxxxxxx або +38(099)xxx-xx-xx");
+//            result.setPhoneField(phone);
+//        }
+//        return result;
+//    }
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // insert - додати до БД. Дані передаються як JSON у тілі запиту
@@ -85,8 +109,9 @@ public class DbServlet extends HttpServlet {
             JsonObject data = JsonParser.parseString(json).getAsJsonObject();
             result.addProperty("name", data.get("name").getAsString());
             result.addProperty("phone", data.get("phone").getAsString());
+
         } catch (IOException ex) {
-            json = ex.getMessage();
+            //json = ex.getMessage();
             result.addProperty("message", ex.getMessage());
         }
         resp.getWriter().print(result.toString());
