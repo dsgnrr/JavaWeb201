@@ -55,7 +55,7 @@
     <i class="material-icons right">phone_iphone</i>
     Замовити дзвінок
 </button>
-
+<p id="lastId"></p>
 <br/>
 <u id="out"></u>
 </p>
@@ -65,5 +65,26 @@
         <i class="material-icons right">view_list</i>
         Переглянути замовлення
     </button>
+    <div class="col s12" id="cardTable">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title"><h4>Call me</h4></span>
+                <div class="row">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Moment</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

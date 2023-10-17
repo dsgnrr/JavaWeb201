@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -195,10 +196,24 @@ public class DbServlet extends HttpServlet {
             resp.getWriter().print("\"Server error. Details on server's logs\"");
             return;
         }
+        sql = "SELECT id FROM java201_call_me ORDER BY moment DESC LIMIT 1";
+        String lastId = "";
+        try (PreparedStatement prep = dbProvider.getConnection().prepareStatement(sql)) {
+            ResultSet qResult = prep.executeQuery();
+            if (qResult.next()) {
+                lastId = qResult.getString("id");
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage() + " " + sql);
+            resp.setStatus(500);
+            resp.getWriter().print("\"Server error. Details on server's logs\"");
+            return;
+        }
         resp.setStatus(201);
         result.addProperty("name", name);
         result.addProperty("phone", phone);
         result.addProperty("status", "created");
+        result.addProperty("last_id", lastId);
         resp.getWriter().print(result.toString());
     }
 }

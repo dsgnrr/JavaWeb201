@@ -1,6 +1,21 @@
 # JavaWeb201 Homeworks
 
-## 16.10 Homework
+## 17.10 Homework 7
+
+* Code <br>
+    * Get last added id from base<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw7/getLastAddedId.png)
+    * Write last added id on client<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw7/getLastAddedIdJs.png)
+    * Write data in table on client<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw7/createTable.png)
+* Result <br>
+    * Last id <br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw7/result1.png)
+    * Data table <br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw7/result2.png)
+
+## 16.10 Homework 6
 
 * Code <br>
     * validate function<br>
@@ -10,7 +25,7 @@
 * Result <br>
   ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw6/result.png)
 
-## 13.10 Homework
+## 13.10 Homework 5
 
 * Planet scale<br>
   ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw5/db.png)
@@ -21,7 +36,7 @@
 * Avatars<br>
   ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw5/result.png)
 
-## 11.10 Homework
+## 11.10 Homework 4
 
 * Code <br>
     * Get extension<br>
@@ -33,7 +48,7 @@
 * Result <br>
   ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw4/result.png)
 
-## 10.10 Homework
+## 10.10 Homework 3
 
 * Code <br>
     * RegistrationValidationForm<br>
@@ -45,7 +60,7 @@
 * Result <br>
   ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw3/result.png)
 
-## 09.10 Homework
+## 09.10 Homework 2
 
 * Code <br>
     * IoCServlet: <br>
@@ -54,7 +69,7 @@
     * IoC page:
       ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw2/result.png)
 
-## 06.10 Homework
+## 06.10 Homework 1
 
 * Code <br>
     * Servlet class:<br>
