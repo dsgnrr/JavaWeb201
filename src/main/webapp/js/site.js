@@ -16,7 +16,17 @@ document.addEventListener('DOMContentLoaded', function () {
     if (insertButton) {
         insertButton.addEventListener('click', insertButtonClick);
     }
+    const readButton = document.getElementById("db-read-button");
+    if (readButton) {
+        readButton.addEventListener('click', readButtonClick);
+    }
 });
+
+function readButtonClick() {
+    fetch(window.location.href, {
+        method: "COPY"
+    }).then(r => r.json()).then(console.log)
+}
 
 function insertButtonClick() {
     const nameInput = document.querySelector('[name="user-name"]');
@@ -27,20 +37,19 @@ function insertButtonClick() {
     if (!phoneInput) {
         throw '[name="user-phone"] not found';
     }
-    if (validateFields(nameInput, phoneInput)) {
-        fetch(window.location.href, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: nameInput.value,
-                phone: phoneInput.value
-            })
-        }).then(r => r.json()).then(j => {
-            console.log(j);
-        });
-    }
+
+    fetch(window.location.href, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: nameInput.value,
+            phone: phoneInput.value
+        })
+    }).then(r => r.json()).then(j => {
+        console.log(j);
+    });
 }
 
 function createButtonClick() {
@@ -67,6 +76,7 @@ function validateFields(nameInput, phoneInput) {
         isValid = false;
         nameInput.classList.add("invalid");
         nameError.setAttribute("data-error", "Ім'я не може бути порожнім");
+        // nameError.setAttribute("data-error", "Ім'я не може бути порожнім");
     }
     // } else if (!namePattern.test(nameInput.value)) {
     //     isValid = false;

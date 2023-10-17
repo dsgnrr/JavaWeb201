@@ -1,5 +1,5 @@
 <%@ page import="java.util.Date" %>
-<%--<%@ page contentType="text/html;charset=UTF-8" %>--%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String pageBody = (String) request.getAttribute("page-body");
     String context = request.getContextPath(); // /JavaWeb201 - Dekploy - App context
@@ -7,7 +7,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="http-equiv" content="Content-type: text/html; charset=UTF-8">
+    <meta charset="UTF-8">
     <title>Java web</title>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -87,10 +87,7 @@
 
 <!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<!--Site JS-->
-<script src="<%= context %>/js/site.js?time=<%= new Date().getTime()%>" charset="UTF-8"></script>
-<%--<script src="<%= context %>/js/site.js" charset="UTF-8"></script>--%>
-
+<script src="<%= context %>/js/site.js?time=<%= new Date().getTime()%>"></script>
 <%--Спосіб антикешування, так робити не слід, якщо якісь ресурси не оновились, скоріш за все, це через кешовані дані--%>
 <%--ctrl+f5 для повного оновлення сторінки--%>
 <%--<!--Site JS-->--%>
