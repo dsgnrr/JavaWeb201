@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import step.learning.dao.CallMeDao;
 import step.learning.dto.enitities.CallMe;
 import step.learning.services.db.DbProvider;
 
@@ -28,11 +29,13 @@ import java.util.regex.Pattern;
 public class DbServlet extends HttpServlet {
     private final DbProvider dbProvider;
     private final String dbPrefix;
+    private final CallMeDao callMeDao;
 
     @Inject
-    public DbServlet(DbProvider dbProvider, @Named("db-prefix") String dbPrefix) {
+    public DbServlet(DbProvider dbProvider, @Named("db-prefix") String dbPrefix, CallMeDao callMeDao) {
         this.dbProvider = dbProvider;
         this.dbPrefix = dbPrefix;
+        this.callMeDao = callMeDao;
     }
 
     @Override
@@ -60,10 +63,11 @@ public class DbServlet extends HttpServlet {
     }
 
     protected void doCopy(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<CallMe> calls = new ArrayList<>();
-        calls.add(new CallMe(100500, "Петрович", "+380973619667", new Date()));
-        calls.add(new CallMe(100501, "User", "+380973619667", new Date()));
-        Gson gson = new GsonBuilder().create();
+        /*List<CallMe> calls = new ArrayList<>();
+        calls.add(new CallMe("100500", "Петрович", "+380973619667", new Date()));
+        calls.add(new CallMe("100501", "User", "+380973619667", new Date()));*/
+        List<CallMe> calls = callMeDao.getAll();
+        Gson gson = new GsonBuilder().serializeNulls().create();
         resp.getWriter().print(gson.toJson(calls));
     }
 

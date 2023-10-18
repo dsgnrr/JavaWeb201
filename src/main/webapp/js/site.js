@@ -30,37 +30,43 @@ function readButtonClick() {
     fetch(window.location.href, {
         method: "COPY"
     }).then(r => r.json())
-        .then(j => {
-            if (Array.isArray(j)) {
-                document.getElementById("cardTable").hidden = false;
-                const tableBody = document.getElementById("tableBody");
-                while (tableBody.firstChild) {
-                    tableBody.removeChild(tableBody.firstChild);
-                }
-                let tr;
-                let td;
-                for (let i = 0; i < j.length; i++) {
-                    tr = document.createElement("tr");
+        .then(showCalls);
+}
 
-                    td = document.createElement("td");
-                    td.textContent = j[i].id;
-                    tr.appendChild(td);
+function showCalls(j) {
+    if (Array.isArray(j)) {
+        document.getElementById("cardTable").hidden = false;
+        const tableBody = document.getElementById("tableBody");
+        while (tableBody.firstChild) {
+            tableBody.removeChild(tableBody.firstChild);
+        }
+        let tr;
+        let td;
+        for (let i = 0; i < j.length; i++) {
+            tr = document.createElement("tr");
 
-                    td = document.createElement("td");
-                    td.textContent = j[i].name;
-                    tr.appendChild(td);
+            td = document.createElement("td");
+            td.textContent = j[i].id;
+            tr.appendChild(td);
 
-                    td = document.createElement("td");
-                    td.textContent = j[i].phone;
-                    tr.appendChild(td);
+            td = document.createElement("td");
+            td.textContent = j[i].name;
+            tr.appendChild(td);
 
-                    td = document.createElement("td");
-                    td.textContent = j[i].moment;
-                    tr.appendChild(td);
-                    tableBody.appendChild(tr);
-                }
-            }
-        })
+            td = document.createElement("td");
+            td.textContent = j[i].phone;
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.textContent = j[i].moment;
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.innerHTML = j[i].callMoment === null ? `<button data-id="${j[i].id}" onclick="callClick(event)">call</button>` : j[i].call_moment;
+            tr.appendChild(td);
+            tableBody.appendChild(tr);
+        }
+    }
 }
 
 function insertButtonClick() {
@@ -131,4 +137,8 @@ function validateFields(nameInput, phoneInput) {
         phoneError.setAttribute("data-error", "Телефон не відповідає шаблону: +38099xxxxxxx або +38(099)xxx-xx-xx");
     }
     return isValid;
+}
+
+function callClick(e) {
+    alert('CALLING id= ' + e.target.getAttribute("data-id"));
 }
