@@ -21,8 +21,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 @Singleton
@@ -30,12 +32,14 @@ public class DbServlet extends HttpServlet {
     private final DbProvider dbProvider;
     private final String dbPrefix;
     private final CallMeDao callMeDao;
+    private final Logger logger;
 
     @Inject
-    public DbServlet(DbProvider dbProvider, @Named("db-prefix") String dbPrefix, CallMeDao callMeDao) {
+    public DbServlet(DbProvider dbProvider, @Named("db-prefix") String dbPrefix, CallMeDao callMeDao, Logger logger) {
         this.dbProvider = dbProvider;
         this.dbPrefix = dbPrefix;
         this.callMeDao = callMeDao;
+        this.logger = logger;
     }
 
     @Override
@@ -45,12 +49,13 @@ public class DbServlet extends HttpServlet {
             case "COPY":
                 doCopy(req, resp);
                 break;
+            case "LINK":
+                doLink(req, resp);
+                break;
             case "PATCH":
                 doPatch(req, resp);
                 break;
 //            case "PURGE":
-//                break;
-//            case "LINK":
 //                break;
 //            case "UNLINK":
 //                break;
@@ -60,6 +65,78 @@ public class DbServlet extends HttpServlet {
                 super.service(req, resp);
         }
 
+    }
+
+    private boolean isDigit(String value) {
+        List<Character> chars = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        for (int i = 0; i < value.length(); i++) {
+            if (!chars.contains(value.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected void doLink(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setHeader("Content-Type", "application/json");
+        String contentType = req.getContentType();
+        if (contentType == null || !contentType.startsWith("application/json")) {
+            resp.setStatus(415);
+            resp.getWriter().print("\"Unsupported Media Type : 'application/json' only\"");
+            return;
+        }
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        byte[] buffer = new byte[4096];
+        int len;
+        String json = "";
+        JsonObject result = new JsonObject();
+        try (InputStream body = req.getInputStream()) {
+            while ((len = body.read(buffer)) > 0) {
+                bytes.write(buffer, 0, len);
+            }
+            json = bytes.toString(StandardCharsets.UTF_8.name());
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, ex.getMessage());
+            result.addProperty("message", ex.getMessage());
+            resp.setStatus(500);
+            resp.getWriter().print("\"Server error. Details on server's logs\"");
+            return;
+        }
+        JsonObject data;
+        try {
+            data = JsonParser.parseString(json).getAsJsonObject();
+        } catch (JsonSyntaxException | IllegalStateException ex) {
+            resp.setStatus(400);
+            resp.getWriter().print("\"Invalid JSON. Object required\"");
+            return;
+        }
+        String callUserId;
+        try {
+            callUserId = data.get("userId").getAsString();
+        } catch (Exception ignored) {
+            resp.setStatus(400);
+            resp.getWriter().print("\"Invalid JSON data: required non-null 'userId'\"");
+            return;
+        }
+        if (!isDigit(callUserId)) {
+            resp.setStatus(400);
+            resp.getWriter().print("\"Invalid JSON data: 'userId' is not id\"");
+            return;
+        }
+        String sql = "UPDATE " + dbPrefix + "call_me " +
+                "SET call_moment = NOW() " +
+                "WHERE id = " + callUserId + ";";
+        try (PreparedStatement prep = dbProvider.getConnection().prepareStatement(sql)) {
+            prep.execute();
+        } catch (SQLException ex) {
+            logger.log(Level.WARNING, ex.getMessage() + " " + sql);
+            resp.setStatus(500);
+            resp.getWriter().print("\"Server error. Details on server's logs\"");
+            return;
+        }
+        result.addProperty("status", "204");
+        result.addProperty("statusMessage", "CallMe_moment succesfully updated");
+        resp.getWriter().print(result.toString());
     }
 
     protected void doCopy(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

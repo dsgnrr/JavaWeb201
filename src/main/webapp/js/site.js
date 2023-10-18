@@ -42,27 +42,27 @@ function showCalls(j) {
         }
         let tr;
         let td;
-        for (let i = 0; i < j.length; i++) {
+        for (let call of j) {
             tr = document.createElement("tr");
 
             td = document.createElement("td");
-            td.textContent = j[i].id;
+            td.textContent = call.id;
             tr.appendChild(td);
 
             td = document.createElement("td");
-            td.textContent = j[i].name;
+            td.textContent = call.name;
             tr.appendChild(td);
 
             td = document.createElement("td");
-            td.textContent = j[i].phone;
+            td.textContent = call.phone;
             tr.appendChild(td);
 
             td = document.createElement("td");
-            td.textContent = j[i].moment;
+            td.textContent = call.moment;
             tr.appendChild(td);
 
             td = document.createElement("td");
-            td.innerHTML = j[i].callMoment === null ? `<button data-id="${j[i].id}" onclick="callClick(event)">call</button>` : j[i].call_moment;
+            td.innerHTML = call.callMoment === null ? `<button data-id="${call.id}" class="waves-effect waves-light btn deep-purple darken-4" onclick="callClick(event)"><i class="material-icons right">call</i>call</button>` : call.callMoment;
             tr.appendChild(td);
             tableBody.appendChild(tr);
         }
@@ -140,5 +140,21 @@ function validateFields(nameInput, phoneInput) {
 }
 
 function callClick(e) {
-    alert('CALLING id= ' + e.target.getAttribute("data-id"));
+    const userId = e.target.getAttribute("data-id")
+    const result = confirm(`Do you really want to call the user:${userId}?`);
+    if (result) {
+        fetch(window.location.href, {
+            method: "LINK",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({userId: userId})
+        }).then(r => r.json())
+            .then(j => {
+                if (j.status === "204") {
+                    window.location.reload();
+                }
+            })
+    }
+    //alert('CALLING id= ' + e.target.getAttribute("data-id"));
 }
