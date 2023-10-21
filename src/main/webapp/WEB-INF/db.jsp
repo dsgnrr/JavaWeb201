@@ -45,10 +45,20 @@
     <label for="user-name">Ім'я</label>
     <span id="nameError" class="helper-text" data-error=""></span>
 </div>
-<div class="input-field col s6">
-    <input name="user-phone" id="user-phone" type="text" class="validate">
-    <label for="user-phone">Телефон</label>
-    <span id="phoneError" class="helper-text" data-error=""></span>
+<div class="row">
+    <div class="input-field col s10">
+        <input placeholder="Телефон" name="user-phone" id="user-phone" type="text" class="validate">
+        <%--        <label class="active" for="user-phone">Телефон</label>--%>
+        <span id="phoneError" class="helper-text" data-error=""></span>
+
+    </div>
+    <div class="input-field col s2">
+        <button id="number-generate-button"
+                class="waves-effect waves-light btn deep-purple darken-4">
+            <i class="material-icons right">autorenew</i>
+            Generate
+        </button>
+    </div>
 </div>
 <button id="db-insert-button"
         class="waves-effect waves-light btn deep-purple darken-4">
@@ -78,6 +88,7 @@
                             <th>Phone</th>
                             <th>Moment</th>
                             <th>Call Moment</th>
+                            <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody id="tableBody">

@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (cardTableDiv) {
         cardTableDiv.hidden = true;
     }
+    const generateButton = document.getElementById("number-generate-button");
+    if (generateButton) {
+        generateButton.addEventListener('click', generateNewNumber);
+    }
 });
 
 function readButtonClick() {
@@ -64,6 +68,11 @@ function showCalls(j) {
             td = document.createElement("td");
             td.innerHTML = call.callMoment === null ? `<button data-id="${call.id}" class="waves-effect waves-light btn deep-purple darken-4" onclick="callClick(event)"><i class="material-icons right">call</i>call</button>` : call.callMoment;
             tr.appendChild(td);
+
+            td = document.createElement("td");
+            td.innerHTML = `<button data-id="${call.id}" class="waves-effect waves-dark btn purple lighten-4" onclick="deleteClick(event)"><i class="material-icons right">clear</i>Delete</button>`
+            tr.appendChild(td);
+
             tableBody.appendChild(tr);
         }
     }
@@ -140,21 +149,62 @@ function validateFields(nameInput, phoneInput) {
 }
 
 function callClick(e) {
-    const userId = e.target.getAttribute("data-id")
-    const result = confirm(`Do you really want to call the user:${userId}?`);
+    const callId = e.target.getAttribute("data-id")
+    const result = confirm(`Do you really want to call the user:${callId}?`);
     if (result) {
-        fetch(window.location.href, {
+        // old-version
+        /*fetch(window.location.href, {
             method: "LINK",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({userId: userId})
+            body: JSON.stringify({"call-id": callId})
         }).then(r => r.json())
             .then(j => {
                 if (j.status === "204") {
                     window.location.reload();
                 }
-            })
+            })*/
+        fetch(window.location.href + `?call-id=${callId}`, {
+            method: "PATCH",
+        }).then(r => r.json()).then(j => {
+            if (typeof j.callMoment == 'undefined') { // j - текст помилки
+                alert(j);
+            } else {
+                // прибираємо кнопку та ставимо дату
+                e.target.parentNode.innerHTML = j.callMoment;
+            }
+        })
+
     }
     //alert('CALLING id= ' + e.target.getAttribute("data-id"));
+}
+
+function generateNewNumber() {
+    let number = '+380';
+    for (let i = 0; i < 9; i++) {
+        number += Math.floor(Math.random() * 10)
+    }
+    document.getElementById("user-phone").value = number;
+}
+
+function deleteClick(e) {
+    const btn = e.target.closest('button');
+    const callId = btn.getAttribute("data-id")
+    const result = confirm(`Do you really want to delete the user order: ${callId}?`);
+    if (result) {
+        fetch(window.location.href + `?call-id=${callId}`, {
+            method: "DELETE",
+        }).then(r => {
+            if (r.status === 202) { // успішне видалення
+                let tr = btn   // button
+                    .parentNode                 // td
+                    .parentNode;                // tr
+                tr.parentNode.removeChild(tr);
+            } else {
+                r.json().then(alert);
+            }
+        })
+
+    }
 }
