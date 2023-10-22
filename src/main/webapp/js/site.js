@@ -28,19 +28,53 @@ document.addEventListener('DOMContentLoaded', function () {
     if (generateButton) {
         generateButton.addEventListener('click', generateNewNumber);
     }
+    const reaAllButton = document.getElementById("db-readall-button");
+    if (reaAllButton) {
+        reaAllButton.addEventListener('click', readAllButtonClick);
+    }
 });
 
-function readButtonClick() {
-    fetch(window.location.href, {
+function readAllButtonClick() {
+    fetch(window.location.href + '?allow-delete=true', {
         method: "COPY"
     }).then(r => r.json())
-        .then(showCalls);
+        .then(j => {
+            drawCallsTable(j.calls, true);
+        });
 }
 
-function showCalls(j) {
+function readButtonClick() {
+    fetch(window.location.href + '?allow-delete=false', {
+        method: "COPY"
+    }).then(r => r.json())
+        .then(j => {
+            drawCallsTable(j.calls, false);
+        });
+}
+
+function drawCallsTable(j, allowDelete = false) {
     if (Array.isArray(j)) {
         document.getElementById("cardTable").hidden = false;
-        const tableBody = document.getElementById("tableBody");
+        const orderTable = document.getElementById("orderTable");
+        while (orderTable.firstChild) {
+            orderTable.removeChild(orderTable.firstChild);
+        }
+        let table = document.createElement("table");
+        let tablehead = `<thead>
+                                    <tr>
+                                   <th>ID</th>
+                                   <th>Name</th>
+                                   <th>Phone</th>
+                                   <th>Moment</th>
+                                   <th>Call Moment</th>
+                                   <th>Delete</th>`;
+        if (allowDelete) {
+            tablehead += `<th>Restore</th>`;
+        }
+        tablehead += `</tr></thead>`;
+        orderTable.appendChild(table);
+        table.innerHTML = tablehead;
+        const tableBody = document.createElement("tbody");
         while (tableBody.firstChild) {
             tableBody.removeChild(tableBody.firstChild);
         }
@@ -70,10 +104,17 @@ function showCalls(j) {
             tr.appendChild(td);
 
             td = document.createElement("td");
-            td.innerHTML = `<button data-id="${call.id}" class="waves-effect waves-dark btn purple lighten-4" onclick="deleteClick(event)"><i class="material-icons right">clear</i>Delete</button>`
+            td.innerHTML = call.deleteMoment === null ? `<button data-id="${call.id}" class="waves-effect waves-dark btn purple lighten-4" onclick="deleteClick(event)"><i class="material-icons right">clear</i>Delete</button>` : call.deleteMoment;
             tr.appendChild(td);
 
+            if (allowDelete) {
+                td = document.createElement("td");
+                td.innerHTML = call.deleteMoment !== null ? `<button data-id="${call.id}" class="waves-effect waves-dark btn red lighten-3" onclick="restoreClick(event)"><i class="material-icons right">settings_backup_restore</i>Restore</button>` : '---';
+                tr.appendChild(td);
+            }
+
             tableBody.appendChild(tr);
+            table.appendChild(tableBody);
         }
     }
 }
@@ -203,6 +244,55 @@ function deleteClick(e) {
                 tr.parentNode.removeChild(tr);
             } else {
                 r.json().then(alert);
+            }
+        })
+
+    }
+}
+
+function restoreClick(e) {
+    const btn = e.target.closest('button');
+    const callId = btn.getAttribute("data-id")
+    const result = confirm(`Do you really want to restore the user order: ${callId}?`);
+    if (result) {
+        fetch(window.location.href + `?call-id=${callId}`, {
+            method: "LINK",
+        }).then(r => r.json()).then(j => {
+            if (typeof j.deleteMoment == 'undefined') {
+                alert(j);
+            } else {
+                const tr = btn.parentNode.parentNode;
+                while (tr.firstChild) {
+                    tr.removeChild(tr.firstChild);
+                }
+                let td = document.createElement("td");
+                td.textContent = j.id;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.textContent = j.name;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.textContent = j.phone;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.textContent = j.moment;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = j.callMoment === null ? `<button data-id="${j.id}" class="waves-effect waves-light btn deep-purple darken-4" onclick="callClick(event)"><i class="material-icons right">call</i>call</button>` : j.callMoment;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = j.deleteMoment === null ? `<button data-id="${j.id}" class="waves-effect waves-dark btn purple lighten-4" onclick="deleteClick(event)"><i class="material-icons right">clear</i>Delete</button>` : j.deleteMoment;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.innerHTML = j.deleteMoment !== null ? `<button data-id="${j.id}" class="waves-effect waves-dark btn red lighten-3" onclick="restoreClick(event)"><i class="material-icons right">settings_backup_restore</i>Restore</button>` : '---';
+                tr.appendChild(td);
+
             }
         })
 

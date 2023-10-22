@@ -75,25 +75,16 @@
         <i class="material-icons right">view_list</i>
         Переглянути замовлення
     </button>
+    <button id="db-readall-button"
+            class="waves-effect waves-light btn deep-purple darken-4">
+        <i class="material-icons right">delete</i>
+        Переглянути всі замовлення
+    </button>
     <div class="col s12" id="cardTable">
         <div class="card">
             <div class="card-content">
                 <span class="card-title"><h4>Call me</h4></span>
-                <div class="row">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Moment</th>
-                            <th>Call Moment</th>
-                            <th>Delete</th>
-                        </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        </tbody>
-                    </table>
+                <div id="orderTable" class="row">
                 </div>
             </div>
         </div>

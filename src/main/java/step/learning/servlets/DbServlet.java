@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import step.learning.dao.CallMeDao;
 import step.learning.dto.enitities.CallMe;
+import step.learning.dto.models.GetCallsModel;
 import step.learning.services.db.DbProvider;
 
 import javax.servlet.ServletException;
@@ -78,7 +79,8 @@ public class DbServlet extends HttpServlet {
     }
 
     protected void doLink(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setHeader("Content-Type", "application/json");
+        //old-version
+        /*resp.setHeader("Content-Type", "application/json");
         String contentType = req.getContentType();
         if (contentType == null || !contentType.startsWith("application/json")) {
             resp.setStatus(415);
@@ -136,16 +138,58 @@ public class DbServlet extends HttpServlet {
         }
         result.addProperty("status", "204");
         result.addProperty("statusMessage", "CallMe_moment succesfully updated");
-        resp.getWriter().print(result.toString());
+        resp.getWriter().print(result.toString());*/
+        resp.setContentType("application/json");
+        String callId = req.getParameter("call-id");
+        if (callId == null) {
+            resp.setStatus(400);
+            resp.getWriter().print("\"Missing required parametr 'call-id'\"");
+            return;
+        }
+        CallMe item = callMeDao.getById(callId, true);
+        if (item == null) {
+            resp.setStatus(404);
+            resp.getWriter().print("\"Item not found for given parametr 'call-id'\"");
+            return;
+        }
+        if (item.getDeleteMoment() == null) {
+            resp.setStatus(422);
+            resp.getWriter().print("\"Uncprocessable Content: Item was processed early\"");
+            return;
+        }
+        if (callMeDao.restore(item)) {
+            resp.setStatus(202);
+            item.setDeleteMoment(null);
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            resp.getWriter().print(gson.toJson(item));
+        } else {
+            resp.setStatus(500);
+            resp.getWriter().print("\"Server error. Details on server's logs\"");
+        }
     }
 
     protected void doCopy(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        /*List<CallMe> calls = new ArrayList<>();
-        calls.add(new CallMe("100500", "Петрович", "+380973619667", new Date()));
-        calls.add(new CallMe("100501", "User", "+380973619667", new Date()));*/
-        List<CallMe> calls = callMeDao.getAll();
+        resp.setContentType("application/json");
+        List<CallMe> calls;
+        String allowDelete = req.getParameter("allow-delete");
+        GetCallsModel callsModel = new GetCallsModel();
+        if (allowDelete == null) {
+            resp.setStatus(400);
+            resp.getWriter().print("\"Invalid Request parameter. Required parametr: 'allow-delete'\"");
+            return;
+        } else {
+            if (allowDelete.equals("true") || allowDelete.equals("false")) {
+                calls = allowDelete.equals("true") ? callMeDao.getAll(true) : callMeDao.getAll();
+                callsModel.setAllowDelete(allowDelete.equals("true"));
+                callsModel.setCalls(calls);
+            } else {
+                resp.setStatus(400);
+                resp.getWriter().print("\"Invalid Request parameter. Parametr 'allow-delete' must contains 'true' or 'false'\"");
+                return;
+            }
+        }
         Gson gson = new GsonBuilder().serializeNulls().create();
-        resp.getWriter().print(gson.toJson(calls));
+        resp.getWriter().print(gson.toJson(callsModel));
     }
 
     protected void doPatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -333,7 +377,8 @@ public class DbServlet extends HttpServlet {
             resp.getWriter().print("\"Missing required parametr 'call-id'\"");
             return;
         }
-        CallMe item = callMeDao.getById(callId);
+        CallMe item = callMeDao.getById(callId
+        );
         if (item == null) {
             resp.setStatus(404);
             resp.getWriter().print("\"Item not found for given parametr 'call-id'\"");

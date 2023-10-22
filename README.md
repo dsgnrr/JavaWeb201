@@ -1,5 +1,24 @@
 # JavaWeb201 Homeworks
 
+## 20.10 Homework 9
+
+* Code <br>
+    * Get all<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/getAll.png)
+    * GetCallModel<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/getCallModel.png)
+    * DAO Restore<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/daoRestore.png)
+    * Servlet Restore<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/sevletRestore.png)
+* Result <br>
+    * All calls includes deleted<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/result1.png)
+    * Conform to restore call<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/result2.png)
+    * Restored call<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw9/result3.png)
+
 ## 18.10 Homework 8
 
 * Code <br>

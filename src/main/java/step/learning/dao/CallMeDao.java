@@ -123,6 +123,21 @@ public class CallMeDao {
         }
         return false;
     }
+
+    public boolean restore(CallMe item) {
+        if (item == null || item.getId() == null) {
+            return false;
+        }
+        String sql = "UPDATE " + dbPrefix + "call_me SET delete_moment = NULL WHERE id = ?";
+        try (PreparedStatement prep = dbProvider.getConnection().prepareStatement(sql)) {
+            prep.setString(1, item.getId());
+            prep.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            logger.log(Level.WARNING, ex.getMessage() + " --- " + sql);
+        }
+        return false;
+    }
 }
 /*
 DAO - Data Access Object - елементи DAL (Data Access Layer) - об'єкти призначені
