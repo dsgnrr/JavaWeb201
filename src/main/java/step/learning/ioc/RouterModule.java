@@ -12,9 +12,11 @@ public class RouterModule extends ServletModule {
 
         serve("/").with(HomeServlet.class);
         serve("/about").with(JspServlet.class);
+        serve("/auth").with(AuthServlet.class);
+        serve("/db").with(DbServlet.class);
         serve("/filters").with(FiltersServlet.class);
         serve("/ioc").with(IocServlet.class);
         serve("/signup").with(SignupServlet.class);
-        serve("/db").with(DbServlet.class);
+        serve("/spa").with(SpaServlet.class);
     }
 }

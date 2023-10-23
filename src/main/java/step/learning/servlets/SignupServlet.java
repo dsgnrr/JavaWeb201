@@ -1,6 +1,7 @@
 package step.learning.servlets;
 
 import com.google.inject.Singleton;
+import step.learning.dao.UserDao;
 import step.learning.dto.models.RegFormModel;
 import step.learning.services.formparse.FormParseResult;
 import step.learning.services.formparse.FormParseService;
@@ -17,10 +18,12 @@ import java.text.ParseException;
 @Singleton
 public class SignupServlet extends HttpServlet {
     private final FormParseService formParseService;
+    private final UserDao userDao;
 
     @Inject
-    public SignupServlet(FormParseService formParseService) {
+    public SignupServlet(FormParseService formParseService, UserDao userDao) {
         this.formParseService = formParseService;
+        this.userDao = userDao;
     }
 
     @Override
@@ -61,9 +64,6 @@ public class SignupServlet extends HttpServlet {
         } catch (ParseException e) {
             model = null;
         }
-
-        // Перевірка наявності файлу (та його збереження)
-
         // Зберігаємо необдхідні дані у сесії та повертаємо на ГЕТ
         // шляхом відповіді-редиректу
         HttpSession session = req.getSession();
@@ -77,6 +77,7 @@ public class SignupServlet extends HttpServlet {
             session.setAttribute("reg-status", 1);
         } else {
             // стан успішної обробки моделі - передаємо лише повідомлення
+            userDao.addFromForm(model);
             session.setAttribute("reg-status", 2);
         }
         resp.sendRedirect(req.getRequestURI());

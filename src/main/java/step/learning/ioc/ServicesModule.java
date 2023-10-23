@@ -13,7 +13,8 @@ import step.learning.services.random.*;
 public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(HashService.class).annotatedWith(Names.named("Digest-Hash")).to(Sha256HashService.class);
+        bind(HashService.class).annotatedWith(Names.named("Digest-Hash2")).to(Sha256HashService.class);
+        bind(HashService.class).annotatedWith(Names.named("Digest-Hash")).to(Sha1HashService.class);
         bind(HashService.class).annotatedWith(Names.named("DSA-Hash")).to(Md5HashService.class);
 
         bind(FormParseService.class).to(MixedFormParseService.class);
