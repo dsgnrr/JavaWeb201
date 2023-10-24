@@ -8,17 +8,22 @@ import step.learning.services.db.PlanetDbProvider;
 import step.learning.services.formparse.FormParseService;
 import step.learning.services.formparse.MixedFormParseService;
 import step.learning.services.hash.*;
+import step.learning.services.kdf.DigestHashKdfService;
+import step.learning.services.kdf.KdfService;
 import step.learning.services.random.*;
+
+import java.util.Date;
 
 public class ServicesModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(HashService.class).annotatedWith(Names.named("Digest-Hash2")).to(Sha256HashService.class);
-        bind(HashService.class).annotatedWith(Names.named("Digest-Hash")).to(Sha1HashService.class);
-        bind(HashService.class).annotatedWith(Names.named("DSA-Hash")).to(Md5HashService.class);
+        bind(HashService.class).annotatedWith(Names.named("DSA-Hash")).to(Sha1HashService.class);
+        bind(HashService.class).annotatedWith(Names.named("Digest-Hash")).to(Md5HashService.class);//
 
         bind(FormParseService.class).to(MixedFormParseService.class);
         bind(DbProvider.class).to(PlanetDbProvider.class);
+        bind(KdfService.class).to(DigestHashKdfService.class);
 
         bind(String.class)
                 .annotatedWith(Names.named("db-prefix"))
@@ -38,7 +43,7 @@ public class ServicesModule extends AbstractModule {
          */
         if (randomService == null) {
             randomService = new RandomServiceV1();
-            randomService.seed("0"); // як приклад того що самого конструктора недостатньо
+            randomService.seed(String.valueOf(new Date().getTime())); // як приклад того що самого конструктора недостатньо
         }
         return randomService;
     }

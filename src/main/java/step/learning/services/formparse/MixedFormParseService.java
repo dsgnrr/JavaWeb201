@@ -64,12 +64,10 @@ public class MixedFormParseService implements FormParseService {
                                 item.getFieldName(),
                                 item.getString(charsetName));
                     } else { // файлове поле
-                        if (item.getSize() != 0) {
-                            files.put(
-                                    item.getFieldName(),
-                                    item
-                            );
-                        }
+                        files.put(
+                                item.getFieldName(),
+                                item
+                        );
                     }
                 }
             } catch (FileUploadException | UnsupportedEncodingException ex) {

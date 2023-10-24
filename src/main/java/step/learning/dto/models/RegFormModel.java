@@ -94,7 +94,7 @@ public class RegFormModel {
     private void setAvatar(FormParseResult result) throws ParseException {
         List<String> allowExt = Arrays.asList(".jpg", ".jpeg", ".png", ".pic", ".pict");
         Map<String, FileItem> files = result.getFiles();
-        if (!files.containsKey("reg-avatar")) {
+        if (!files.containsKey("reg-avatar") || files.get("reg-avatar").getSize() == 0) {
             this.avatar = null;
             return;
         }
