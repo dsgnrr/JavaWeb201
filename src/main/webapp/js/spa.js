@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     // Token verification
     const spaTokenStatus = document.getElementById("spa-token-status");
+
     if (spaTokenStatus) {
         const jti = window.localStorage.getItem('jti');
         spaTokenStatus.innerText = (!!jti) ? 'Встановлено ' + jti : 'Не встановлено';
@@ -24,6 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     .innerHTML = t);
             document.getElementById("spa-logout")
                 .addEventListener('click', logoutClick);
+        }
+    }
+    const spaTokenExp = document.getElementById("spa-token-exp");
+    if (spaTokenExp) {
+        const exp = window.localStorage.getItem('exp');
+        spaTokenExp.innerText = (!!exp) ? exp : 'Токен не встановлено';
+    }
+    const spaTokenActivity = document.getElementById("spa-token-activity");
+    if (spaTokenActivity) {
+        const exp = window.localStorage.getItem('exp');
+        if (exp) {
+            spaTokenActivity.innerText = new Date(exp) > new Date() ? 'Токен активний' : 'Токен не активний';
+        } else {
+            spaTokenActivity.innerText = 'Токен не встановлено';
         }
     }
     const spaGetData = document.getElementById('spa-get-data');
@@ -66,6 +81,12 @@ function authSignInButtonClick() {
                     return;
                 }
                 window.localStorage.setItem('jti', j.jti);
+                window.localStorage.setItem('exp', j.exp);
+                if (window.location.pathname === `/${appContext}/spa`) {
+                    window.location.reload();
+                } else {
+                    document.location.pathname = `${appContext}/spa`;
+                }
             });
         }
     });

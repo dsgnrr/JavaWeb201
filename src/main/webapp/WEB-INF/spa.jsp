@@ -17,7 +17,12 @@
     <li class="collection-item">
         3. Наявність токену на сторінці: <b id="spa-token-status"></b>
     </li>
-    <li class="collection-item"></li>
+    <li class="collection-item">
+        4. Термін дії токену на сторінці до: <b id="spa-token-exp"></b>
+    </li>
+    <li class="collection-item">
+        5. Активність токену: <b id="spa-token-activity"></b>
+    </li>
 </ul>
 <auth-part></auth-part>
 <button class="btn deep-purple darken-2" id="spa-get-data">Дані</button>
