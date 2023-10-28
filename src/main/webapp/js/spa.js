@@ -27,7 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
             spaTokenExp.innerText = "Дійсний до " + tokenObject.exp;
 
             const appContext = getAppContext();
-            fetch(`${appContext}/tpl/spa-auth.html`).then(r => r.text()).then(t =>
+            fetch(`${appContext}/tpl/spa-auth.html`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }).then(r => r.text()).then(t =>
                 document
                     .querySelector('auth-part')
                     .innerHTML = t);
@@ -45,7 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function spaGetDataClick() {
-    console.log("Data spaGetDataClick")
+    console.log("Data spaGetDataClick");
+    const appContext = getAppContext();
+    const token = window.localStorage.getItem('token');
+    fetch(`${appContext}/tpl/NP.png`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(r => r.blob())
+        .then(b => {
+            const blobUrl = URL.createObjectURL(b);
+            document.querySelector('auth-part').innerHTML +=
+                `<img src="${blobUrl}" height="250" alt="no-image"/>`;
+        })
+
+
 }
 
 function logoutClick() {
