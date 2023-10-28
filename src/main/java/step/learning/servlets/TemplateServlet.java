@@ -57,6 +57,10 @@ public class TemplateServlet extends HttpServlet {
         }
         // TODO:  вести журнал видачі ресурсів обмеженого доступу
         String requestedTemplate = req.getPathInfo();
+        if (requestedTemplate.contains("..") || requestedTemplate.contains("//")) {
+            resp.setStatus(404);
+            return;
+        }
         URL url = this.getClass().getClassLoader()
                 .getResource("tpl" + requestedTemplate);
         if (url == null) {
