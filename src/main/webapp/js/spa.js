@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Token verification
     const spaTokenStatus = document.getElementById("spa-token-status");
 
+    const logoutButton = document.getElementById("spa-logout");
+
     const spaTokenExp = document.getElementById("spa-token-exp");
 
     if (spaTokenStatus && spaTokenExp) {
@@ -25,7 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // TODO: перевірити на правильність декодування та дійсність токена
             spaTokenStatus.innerText = 'Встановлено ' + tokenObject.jti;
             spaTokenExp.innerText = "Дійсний до " + tokenObject.exp;
-
+            logoutButton.style.display = '';
+            logoutButton
+                .addEventListener('click', logoutClick);
             const appContext = getAppContext();
             fetch(`${appContext}/tpl/spa-auth.html`, {
                 method: 'GET',
@@ -36,10 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 document
                     .querySelector('auth-part')
                     .innerHTML = t);
-            document.getElementById("spa-logout")
-                .addEventListener('click', logoutClick);
         } else {
             spaTokenStatus.innerText = 'Не встановлено';
+            logoutButton.style.display = 'none';
         }
     }
 
@@ -47,7 +50,65 @@ document.addEventListener("DOMContentLoaded", () => {
     if (spaGetData) {
         spaGetData.addEventListener('click', spaGetDataClick);
     }
+    const spaGetProduct = document.getElementById('spa-get-products');
+    if (spaGetProduct) {
+        spaGetProduct.addEventListener('click', spaGetProductClick);
+    }
+    const spaGetProtected = document.getElementById('spa-get-protected');
+    if (spaGetProtected) {
+        spaGetProtected.addEventListener('click', spaGetProtectedClick);
+    }
+    const spaNotFound = document.getElementById('spa-notfound');
+    if (spaNotFound) {
+        spaNotFound.addEventListener('click', spaNotFoundClick);
+    }
 });
+
+function spaNotFoundClick() {
+    const appContext = getAppContext();
+    const token = window.localStorage.getItem('token');
+    fetch(`${appContext}/tpl/spa-aut2h.html`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(r => r.text()).then(t =>
+        document
+            .querySelector('auth-part')
+            .innerHTML = t);
+}
+
+function spaGetProtectedClick() {
+    const appContext = getAppContext();
+    const token = window.localStorage.getItem('token');
+    fetch(`${appContext}/tpl/spa-auth.html`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(r => r.text()).then(t =>
+        document
+            .querySelector('auth-part')
+            .innerHTML = t);
+
+
+}
+
+function spaGetProductClick() {
+    const appContext = getAppContext();
+    const token = window.localStorage.getItem('token');
+    fetch(`${appContext}/tpl/spa-products.html`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(r => r.text()).then(t =>
+        document
+            .querySelector('auth-part')
+            .innerHTML = t);
+
+
+}
 
 function spaGetDataClick() {
     console.log("Data spaGetDataClick");
@@ -62,14 +123,15 @@ function spaGetDataClick() {
         .then(r => r.blob())
         .then(b => {
             const blobUrl = URL.createObjectURL(b);
-            document.querySelector('auth-part').innerHTML +=
+            document.querySelector('auth-part').innerHTML =
                 `<img src="${blobUrl}" height="250" alt="no-image"/>`;
         })
 
 
 }
 
-function logoutClick() {
+function logoutClick(e) {
+    e.target.style.display = 'none'
     window.localStorage.removeItem('token');
     window.location.reload();
 }

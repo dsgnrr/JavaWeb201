@@ -60,8 +60,12 @@ public class TemplateServlet extends HttpServlet {
         URL url = this.getClass().getClassLoader()
                 .getResource("tpl" + requestedTemplate);
         if (url == null) {
-            resp.setStatus(404);
-            return;
+            url = this.getClass().getClassLoader()
+                    .getResource("tpl/spa-notfound.html");
+            if (url == null) {
+                resp.setStatus(404);
+                return;
+            }
         }
         File file = new File(url.getFile());
         if (!file.isFile()) {

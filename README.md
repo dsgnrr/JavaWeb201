@@ -1,5 +1,12 @@
 # JavaWeb201 Homeworks
 
+## 24.10 Homework 12
+
+* Results:<br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw12/result1.png) <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw12/result2.png) <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw12/result3.png) <br>
+
 ## 24.10 Homework 11
 
 * Code <br>

@@ -25,5 +25,21 @@
     </li>
 </ul>
 <auth-part></auth-part>
-<button class="btn deep-purple darken-2" id="spa-get-data">Дані</button>
-<button class="btn deep-purple darken-4" id="spa-logout">Вихід</button>
+<div class="row">
+    <div class="col s2">
+        <button class="btn deep-purple darken-2" id="spa-get-data">Дані</button>
+    </div>
+    <div class="col s2">
+        <button class="btn deep-purple darken-2" id="spa-get-protected">ІзОД</button>
+    </div>
+    <div class="col s2">
+        <button class="btn deep-purple darken-2" id="spa-get-products">Товари</button>
+    </div>
+    <div class="col s2">
+        <button class="btn deep-purple darken-2" id="spa-notfound">404</button>
+    </div>
+    <div class="col s2">
+        <button class="btn deep-purple darken-4" id="spa-logout">Вихід</button>
+    </div>
+
+</div>
