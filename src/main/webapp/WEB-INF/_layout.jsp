@@ -36,6 +36,8 @@
             ><a href="<%=context%>/db">DB</a></li>
             <li <%="spa.jsp".equals(pageBody) ? "class='active'" : ""%>
             ><a href="<%=context%>/spa">SPA</a></li>
+            <li <%="ws.jsp".equals(pageBody) ? "class='active'" : ""%>
+            ><a href="<%=context%>/ws">WebSocket</a></li>
         </ul>
     </div>
 </nav>
