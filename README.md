@@ -1,5 +1,13 @@
 # JavaWeb201 Homeworks
 
+## 30.10 Homework 14
+
+* Code <br>
+    * Async method for DB update<br>
+      ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw14/code.png)
+* Result <br>
+  ![alt text](https://github.com/dsgnrr/JavaWeb201/blob/master/Homework/hw14/result.png)
+
 ## 27.10 Homework 13
 
 * Results:<br>

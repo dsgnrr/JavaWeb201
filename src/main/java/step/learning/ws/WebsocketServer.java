@@ -52,7 +52,7 @@ public class WebsocketServer {
         String data = jsonObject.get("data").getAsString();
 
         JsonObject respObject = new JsonObject();
-
+        Object synchObject = new Object();
         switch (command) {
             case "auth":
                 AuthToken authToken = authTokenDao.getTokenByBearer(data);
@@ -77,9 +77,19 @@ public class WebsocketServer {
                 if (sub == null) {
                     sendToSession(session, 401, "Auth required");
                 } else {
-                    ChatMessage chatMessage = new ChatMessage(sub, data);
-                    chatDao.add(chatMessage);
-                    sendToAll(201, nik + ": " + data);
+                    Thread addToDbThread = new Thread(() -> {
+                        ChatMessage chatMessage = new ChatMessage(sub, data);
+                        synchronized (synchObject) {
+                            chatDao.add(chatMessage);
+                        }
+                        sendToAll(201, nik + ": " + data);
+                    });
+                    addToDbThread.start();
+                    try {
+                        addToDbThread.join();
+                    } catch (InterruptedException e) {
+                        System.err.println(e.getMessage());
+                    }
                 }
                 break;
             default:
