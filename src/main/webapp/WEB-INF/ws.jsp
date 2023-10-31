@@ -1,15 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <h1>WebSocket</h1>
 <div class="row">
-    <div class="col s2">
-        <strong>user#<%=request.getAttribute("user")%>
-        </strong>
+    <div class="col s5">
+        <strong id="chat-user">Connecting...</strong>
         <input type="text" id="user-message" value="Hello">
         <button class="btn deep-purple darken-4" onclick="sendClick()">Send</button>
         <ul class="collection" id="chat-container">
         </ul>
     </div>
-    <div class="col s10">
+    <div class="col s7">
         <p>
             WebSocket - протокол (приблизно рівня HTTP), відомий схемами
             <b>ws://</b> та <b>wss://</b>. Для прикладного програмування
@@ -46,7 +45,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        initWebSocket();
+        const token = window.localStorage.getItem('token');
+        if (token) {
+            initWebSocket();
+        } else {
+            document.getElementById("chat-user").innerText = `Авторизуйтесь для того щоб користуватись чатом`;
+        }
     })
 
     function addMessage(txt, error = false) {
@@ -61,7 +65,10 @@
 
     function sendClick() {
         window.websocket.send(
-            document.getElementById('user-message').value
+            JSON.stringify({
+                command: 'chat',
+                data: document.getElementById('user-message').value
+            })
         );
     }
 
@@ -76,7 +83,12 @@
 
     function onWsOpen(e) {
         // console.log("onWsOpen: ", e)
-        addMessage('Chat activated');
+        const token = window.localStorage.getItem('token');
+        window.websocket.send(JSON.stringify({
+            command: 'auth',
+            data: token
+        }))
+
     }
 
     function onWsClose(e) {
@@ -86,7 +98,26 @@
 
     function onWsMessage(e) {
         // console.log("onWsMessage: ", e)
-        addMessage(e.data);
+        const message = JSON.parse(e.data);
+        switch (message.status) {
+            case 201:
+                addMessage(message.data);
+                break;
+            case 202: // токен прийнято - вилучаємо з нього SUB та виводимо фрагмент
+                const item = JSON.parse(atob(window.localStorage.getItem('token')));
+                const json = message.data;
+                const dataObject = JSON.parse(json);
+                document.getElementById("chat-user").innerText = dataObject.data;
+                addMessage('Chat activated');
+                break;
+            case 401:
+            case 403:
+                document.getElementById("chat-user").innerText = "Повторіть авторизацію";
+                break;
+            default:
+                console.log(message);
+
+        }
     }
 
     function onWsError(e) {
